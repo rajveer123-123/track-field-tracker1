@@ -3,66 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Athlete Performance Dashboard</title>
+    <title>Pro Athlete Tracker</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #007bff; --dark: #1a1a1a; --gray: #f4f4f9; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--gray); margin: 0; padding: 20px; }
-        .container { max-width: 1000px; margin: auto; }
+        :root { --primary: #2563eb; --dark: #0f172a; --gray: #f1f5f9; --white: #ffffff; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--gray); margin: 0; padding: 15px; }
+        .container { max-width: 900px; margin: auto; }
+        .header { text-align: center; padding: 20px 0; color: var(--dark); }
         
-        /* Professional Card Style */
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card { background: var(--white); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .form-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
         
-        .header { text-align: center; color: var(--dark); border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 30px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #64748b; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
         
-        .form-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
-        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 6px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); }
+        .btn-save { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 15px; width: 100%; transition: 0.2s; }
+        .btn-save:hover { background: #1d4ed8; }
         
-        button { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        button:hover { background: #0056b3; }
+        .btn-reset { background: #fee2e2; color: #dc2626; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; margin-top: 10px; }
 
-        .player-box { background: white; padding: 20px; border-radius: 12px; margin-top: 20px; border-left: 5px solid var(--primary); }
-        .trend-badge { padding: 5px 12px; border-radius: 20px; font-size: 14px; font-weight: bold; float: right; }
-        .up { background: #e6ffed; color: #1e7e34; }
-        .down { background: #ffeef0; color: #d73a49; }
+        .player-section { background: var(--white); padding: 20px; border-radius: 12px; margin-top: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .sport-title { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 15px; }
         
-        canvas { width: 100% !important; height: 300px !important; margin-top: 20px; }
+        .trend-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .up { background: #dcfce7; color: #166534; }
+        .down { background: #fee2e2; color: #991b1b; }
         
-        @media (max-width: 600px) { .form-group { grid-template-columns: 1fr; } }
+        canvas { width: 100% !important; max-height: 300px; }
+        .no-data { text-align: center; color: #94a3b8; padding: 40px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>📊 Performance Analytics Pro</h1>
+        <h1>🚀 Athlete Analytics Pro</h1>
+        <p>Data hamesha save rahega (Auto-Save Enabled)</p>
     </div>
 
     <div class="card">
-        <h3>Add Session Entry</h3>
         <div class="form-group">
-            <input type="text" id="pName" placeholder="Athlete Name">
-            <input type="text" id="sName" placeholder="Sport (e.g. Long Jump)">
-            <input type="date" id="pDate">
-            <input type="number" id="pScore" placeholder="Score (Mtrs/Sec)" step="0.01">
-            <button onclick="saveData()">Update Graph</button>
+            <div>
+                <label>Athlete Name</label>
+                <input type="text" id="pName" placeholder="e.g. Rajveer">
+            </div>
+            <div>
+                <label>Select Sport</label>
+                <select id="sName">
+                    <option value="Long Jump">Long Jump (Meters)</option>
+                    <option value="100m Sprint">100m Sprint (Seconds)</option>
+                    <option value="200m Sprint">200m Sprint (Seconds)</option>
+                    <option value="High Jump">High Jump (Meters)</option>
+                    <option value="Shot Put">Shot Put (Meters)</option>
+                    <option value="Javelin Throw">Javelin Throw (Meters)</option>
+                    <option value="Discus Throw">Discus Throw (Meters)</option>
+                    <option value="Football Skills">Football Skills (Points)</option>
+                </select>
+            </div>
+            <div>
+                <label>Date</label>
+                <input type="date" id="pDate">
+            </div>
+            <div>
+                <label>Performance Score</label>
+                <input type="number" id="pScore" placeholder="Result" step="0.01">
+            </div>
         </div>
+        <button class="btn-save" onclick="saveData()">Save & Update Dashboard</button>
+        <button class="btn-reset" onclick="resetAll()">Clear All Data</button>
     </div>
 
     <div id="displayArea"></div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('sportsDB')) || {};
+    // LocalStorage se data load karna
+    let db = JSON.parse(localStorage.getItem('athleteProfessionalDB')) || {};
 
     function saveData() {
         const name = document.getElementById('pName').value.trim();
-        const sport = document.getElementById('sName').value.trim();
+        const sport = document.getElementById('sName').value;
         const date = document.getElementById('pDate').value;
         const score = parseFloat(document.getElementById('pScore').value);
 
-        if(!name || !sport || !date || isNaN(score)) return alert("Fill all fields!");
+        if(!name || !date || isNaN(score)) {
+            alert("Bhai, saari details sahi se bharo!");
+            return;
+        }
 
         if(!db[name]) db[name] = {};
         if(!db[name][sport]) db[name][sport] = [];
@@ -70,30 +97,45 @@
         db[name][sport].push({date, score});
         db[name][sport].sort((a,b) => new Date(a.date) - new Date(b.date));
         
-        localStorage.setItem('sportsDB', JSON.stringify(db));
+        // Data ko permanent save karna
+        localStorage.setItem('athleteProfessionalDB', JSON.stringify(db));
         renderGraphs();
+        
+        // Input fields clear karna
+        document.getElementById('pScore').value = '';
     }
 
     function renderGraphs() {
         const area = document.getElementById('displayArea');
         area.innerHTML = '';
 
+        if (Object.keys(db).length === 0) {
+            area.innerHTML = '<div class="no-data">Koi data nahi hai. Naya entry add karein!</div>';
+            return;
+        }
+
         for(let player in db) {
+            const playerDiv = document.createElement('div');
+            playerDiv.className = 'player-section';
+            playerDiv.innerHTML = `<h2 style="margin-top:0;">👤 ${player}</h2>`;
+
             for(let sport in db[player]) {
                 const dataPoints = db[player][sport];
                 const first = dataPoints[0].score;
                 const last = dataPoints[dataPoints.length - 1].score;
                 
-                // Logic: Sprint mein kam score (time) matlab increase, Jumps mein zyada matlab increase
-                let isGood = sport.toLowerCase().includes('sprint') ? last < first : last > first;
-                let trendText = isGood ? "📈 Improving" : "📉 Needs Focus";
+                // Logic: Sprint ke liye kam time achha hai, baaki ke liye zyada score achha hai
+                let isGood = sport.includes('Sprint') ? last < first : last > first;
+                let trendText = isGood ? "📈 Improving" : "📉 Needs Practice";
                 let trendClass = isGood ? "up" : "down";
 
                 const chartId = `chart-${player}-${sport}`.replace(/\s+/g, '-');
-                area.innerHTML += `
-                    <div class="player-box">
-                        <span class="trend-badge ${trendClass}">${trendText}</span>
-                        <h3>${player} | <span style="color:#666">${sport}</span></h3>
+                playerDiv.innerHTML += `
+                    <div style="margin-top:25px;">
+                        <div class="sport-title">
+                            <span style="font-weight:600; color:#475569;">🎯 ${sport}</span>
+                            <span class="trend-badge ${trendClass}">${trendText}</span>
+                        </div>
                         <canvas id="${chartId}"></canvas>
                     </div>
                 `;
@@ -104,27 +146,41 @@
                         data: {
                             labels: dataPoints.map(d => d.date),
                             datasets: [{
-                                label: 'Performance Score',
+                                label: sport,
                                 data: dataPoints.map(d => d.score),
-                                borderColor: '#007bff',
-                                tension: 0.3,
+                                borderColor: '#2563eb',
+                                backgroundColor: 'rgba(37, 99, 235, 0.1)',
                                 fill: true,
-                                backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                                pointRadius: 6,
-                                pointBackgroundColor: '#007bff'
+                                tension: 0.4,
+                                pointRadius: 5,
+                                pointBackgroundColor: '#2563eb',
+                                borderWidth: 3
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            plugins: { legend: { display: false } }
+                            plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: false }, x: { grid: { display: false } } }
                         }
                     });
                 }, 0);
             }
+            area.appendChild(playerDiv);
         }
     }
+
+    function resetAll() {
+        if(confirm("Kya aap saara data delete karna chahte hain?")) {
+            localStorage.removeItem('athleteProfessionalDB');
+            db = {};
+            renderGraphs();
+        }
+    }
+
+    // Pehli baar load hone par purana data dikhaye
     renderGraphs();
 </script>
+
 </body>
 </html>
