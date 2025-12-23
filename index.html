@@ -2,137 +2,226 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pro Athlete Tracker</title>
-    
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/857/857455.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athlete Performance Pro-Tracker</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --gold: #fbbf24; --bg: #0a0a0a; --card: #171717; --text: #ffffff; }
-        body { background-color: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; }
-        header { width: 100%; padding: 15px 0; background: #000; border-bottom: 2px solid var(--gold); text-align: center; font-weight: bold; }
-        header span { color: var(--gold); }
-        .container { width: 95%; max-width: 500px; padding: 15px 0; }
-        .card { background: var(--card); border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        #display { font-size: 3.5rem; font-weight: bold; color: var(--gold); text-align: center; margin-bottom: 15px; font-family: monospace; }
-        label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: #888; }
-        select, input { width: 100%; padding: 12px; background: #262626; border: 1px solid #404040; border-radius: 10px; color: white; margin-bottom: 15px; box-sizing: border-box; }
-        .btn-row { display: flex; gap: 10px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-start { background: #22c55e; color: white; }
-        .btn-stop { background: #ef4444; color: white; }
-        .btn-record { background: var(--gold); color: black; width: 100%; margin-top: 5px; }
-        .chart-container { height: 250px; position: relative; }
+        :root {
+            --primary: #2563eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .input-card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        button:hover { opacity: 0.9; }
+
+        .player-section {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .analysis-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .trend-up { background: #dcfce7; color: #166534; }
+        .trend-down { background: #fee2e2; color: #991b1b; }
+
+        canvas {
+            max-height: 350px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .input-card { padding: 15px; }
+        }
     </style>
 </head>
 <body>
 
-<header>ATHLETE<span>PRO</span> DASHBOARD</header>
-
 <div class="container">
-    <div class="card">
-        <label>Select Player Name</label>
-        <input type="text" id="playerName" placeholder="Enter Player Name" oninput="updateView()">
-        
-        <label>Select Sport Category</label>
-        <select id="sportType" onchange="updateView()">
-            <option value="100m Sprint">100m Sprint</option>
-            <option value="200m Sprint">200m Sprint</option>
-            <option value="Long Jump">Long Jump</option>
-            <option value="Javelin">Javelin Throw</option>
-            <option value="Shotput">Shotput</option>
-        </select>
+    <header>
+        <h1>🏃‍♂️ Sports Performance Tracker</h1>
+        <p>Analyze athlete progress with professional precision</p>
+    </header>
+
+    <div class="input-card">
+        <div class="grid-inputs">
+            <input type="text" id="playerName" placeholder="Player Name (e.g. Rajveer)">
+            <select id="sportName">
+                <option value="Long Jump">Long Jump (Meters)</option>
+                <option value="100m Sprint">100m Sprint (Seconds)</option>
+                <option value="High Jump">High Jump (Meters)</option>
+            </select>
+            <input type="date" id="date">
+            <input type="number" id="score" placeholder="Score/Result" step="0.01">
+        </div>
+        <button onclick="addData()">Update Dashboard</button>
     </div>
 
-    <div class="card">
-        <div id="display">00.00</div>
-        <div class="btn-row">
-            <button class="btn-start" onclick="startTimer()">START</button>
-            <button class="btn-stop" onclick="stopTimer()">STOP</button>
-        </div>
-        <input type="number" id="manualValue" placeholder="Or Enter Score Manually" style="margin-top: 15px;">
-        <button class="btn-record" onclick="recordData()">SAVE DATA</button>
-    </div>
-
-    <div class="card">
-        <h3 id="chartTitle" style="font-size: 1rem; margin-top: 0; color: var(--gold);">Performance Graph</h3>
-        <div class="chart-container">
-            <canvas id="playerChart"></canvas>
-        </div>
-    </div>
+    <div id="dashboard"></div>
 </div>
 
 <script>
-    let startTime, elapsedTime = 0, timerInterval;
-    let myChart;
+    let athleteData = JSON.parse(localStorage.getItem('athleteData')) || {};
 
-    // Initialize Chart
-    const ctx = document.getElementById('playerChart').getContext('2d');
-    function initChart() {
-        if (myChart) myChart.destroy();
-        myChart = new Chart(ctx, {
-            type: 'line',
-            data: { labels: [], datasets: [{ label: 'Score', data: [], borderColor: '#fbbf24', tension: 0.4 }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: false, grid: { color: '#333' } } } }
-        });
-    }
-    initChart();
+    function addData() {
+        const name = document.getElementById('playerName').value.trim();
+        const sport = document.getElementById('sportName').value;
+        const date = document.getElementById('date').value;
+        const score = parseFloat(document.getElementById('score').value);
 
-    function startTimer() {
-        if (window.navigator.vibrate) window.navigator.vibrate(50);
-        startTime = Date.now() - elapsedTime;
-        timerInterval = setInterval(() => {
-            elapsedTime = Date.now() - startTime;
-            document.getElementById("display").innerText = (elapsedTime / 1000).toFixed(2);
-        }, 10);
-    }
+        if(!name || !date || isNaN(score)) {
+            alert("Please fill all details correctly!");
+            return;
+        }
 
-    function stopTimer() {
-        if (window.navigator.vibrate) window.navigator.vibrate(50);
-        clearInterval(timerInterval);
-    }
+        if(!athleteData[name]) athleteData[name] = {};
+        if(!athleteData[name][sport]) athleteData[name][sport] = [];
 
-    function recordData() {
-        const player = document.getElementById("playerName").value || "Unknown";
-        const sport = document.getElementById("sportType").value;
-        const manual = document.getElementById("manualValue").value;
-        const finalValue = manual ? manual : (elapsedTime / 1000).toFixed(2);
+        athleteData[name][sport].push({date, score});
+        // Sort by date
+        athleteData[name][sport].sort((a,b) => new Date(a.date) - new Date(b.date));
         
-        if (finalValue <= 0) return alert("Please record a score!");
-
-        // Save to LocalStorage
-        let records = JSON.parse(localStorage.getItem('athleteData')) || [];
-        records.push({ player, sport, value: parseFloat(finalValue), time: new Date().toLocaleTimeString() });
-        localStorage.setItem('athleteData', JSON.stringify(records));
-
-        alert(`Saved for ${player}: ${finalValue}`);
-        updateView();
-        
-        // Reset
-        document.getElementById("manualValue").value = "";
-        elapsedTime = 0;
-        document.getElementById("display").innerText = "00.00";
+        localStorage.setItem('athleteData', JSON.stringify(athleteData));
+        renderDashboard();
     }
 
-    function updateView() {
-        const player = document.getElementById("playerName").value || "Unknown";
-        const sport = document.getElementById("sportType").value;
-        document.getElementById("chartTitle").innerText = `${player}'s ${sport} Progress`;
+    function renderDashboard() {
+        const dashboard = document.getElementById('dashboard');
+        dashboard.innerHTML = '';
 
-        let records = JSON.parse(localStorage.getItem('athleteData')) || [];
-        
-        // Filter data for this specific player AND this specific sport
-        let filteredData = records.filter(r => r.player === player && r.sport === sport);
+        for(let player in athleteData) {
+            const playerDiv = document.createElement('div');
+            playerDiv.className = 'player-section';
+            playerDiv.innerHTML = `<h2>👤 Player: ${player}</h2>`;
 
-        myChart.data.labels = filteredData.map(r => r.time);
-        myChart.data.datasets[0].data = filteredData.map(r => r.value);
-        myChart.data.datasets[0].label = `${sport} Records`;
-        myChart.update();
+            for(let sport in athleteData[player]) {
+                const sportId = `${player}-${sport}`.replace(/\s+/g, '-');
+                const dataPoints = athleteData[player][sport];
+                const lastScore = dataPoints[dataPoints.length - 1].score;
+                const firstScore = dataPoints[0].score;
+                
+                // Logic to check if increasing or decreasing
+                let trendClass = 'trend-up';
+                let trendText = 'Improving';
+
+                if(sport.includes('Sprint')) {
+                    // In Sprint, lower time is better
+                    if(lastScore > firstScore) { trendClass = 'trend-down'; trendText = 'Declining (Time Increased)'; }
+                } else {
+                    if(lastScore < firstScore) { trendClass = 'trend-down'; trendText = 'Declining (Score Dropped)'; }
+                }
+
+                playerDiv.innerHTML += `
+                    <div style="margin-top:20px;">
+                        <h4 style="margin-bottom:5px;">🎯 ${sport}</h4>
+                        <span class="analysis-badge ${trendClass}">${trendText}</span>
+                        <canvas id="${sportId}"></canvas>
+                    </div>
+                `;
+
+                // Render Chart after adding to DOM
+                setTimeout(() => {
+                    const ctx = document.getElementById(sportId).getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: dataPoints.map(d => d.date),
+                            datasets: [{
+                                label: `${sport} Performance`,
+                                data: dataPoints.map(d => d.score),
+                                borderColor: '#2563eb',
+                                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                                fill: true,
+                                tension: 0.3,
+                                borderWidth: 3,
+                                pointRadius: 5
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { beginAtZero: false, grid: { color: '#f1f5f9' } },
+                                x: { grid: { display: false } }
+                            }
+                        }
+                    });
+                }, 0);
+            }
+            dashboard.appendChild(playerDiv);
+        }
     }
+
+    // Load existing data on start
+    renderDashboard();
 </script>
 
 </body>
